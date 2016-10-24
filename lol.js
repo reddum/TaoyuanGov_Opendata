@@ -119,7 +119,7 @@ bot.dialog('/', [
                                                  .drawLine(x,y,x,y+height)
                                                  .drawLine(x,y+height,x+width,y+height)
                                                  .drawLine(x+width,y,x+width,y+height);
-                                            }/*
+                                            }
                                             var writeStream ;
                                             pic.toBuffer('JPG',function (err, buffer) {
                                                   if (err) return handle(err);
@@ -127,37 +127,14 @@ bot.dialog('/', [
                                                   console.log(buffer);
                                                   
 
-
                                                 });
-                                            blobSvc.createBlockBlobFromLocalFile('imagescontainer', '13threaltimeinsight', './final.jpg', function(error, result, response){
-                                                if(error){
-                                                          console.log("Couldn't upload stream");
-                                                          console.error(error);
-                                                      } else {
-                                                          console.log('Stream uploaded successfully');
-                                                      }
-                                              });*/
-                                            /*blobSvc.createBlockBlobFromStream(
-                                                  'imagescontainer',
-                                                  '13threaltimeinsight',
-                                                  buffer,
-                                                  buffer.length,
-                                                  function(error, result, response){
-                                                      if(error){
-                                                          console.log("Couldn't upload stream");
-                                                          console.error(error);
-                                                      } else {
-                                                          console.log('Stream uploaded successfully');
-                                                      }
-                                                  });*/
 
 
 
-                                            pic.write('./output.jpg', function (err) {
+                                           /* pic.write('./final.jpg', function (err) {
                                                 if (!err) console.log('doooooone');
                                                  console.log(err);
                                                 });
-                                            /*
                                             gm(httprequest(u))
                                                 .stroke('#FFBB00')
                                                 .strokeWidth(4)
@@ -243,7 +220,7 @@ bot.dialog('/', [
                 .attachments([{
                 
                 contentType: "image/jpeg",
-                contentUrl: "http://oxfordface-bot.azurewebsites.net/output.jpg",
+                contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/oic.jpg",
                 //SMILE
                  }]);
                 session.endDialog(msg);
