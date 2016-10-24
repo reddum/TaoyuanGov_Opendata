@@ -71,9 +71,49 @@ bot.dialog('/', [
          }else if(typeof session.message.attachments[0] !== 'undefined'){
 
             if(session.message.attachments[0].contentType == 'image/jpeg' || session.message.attachments[0].contentType == 'image/png'){
-                 
-                               
-                       fs.readFile('./reformat.jpg', function(err, data) {
+                    
+                    httprequest.get(session.message.attachments[0].contentUrl, function (error, response, body) {
+                        
+                        if (!error && response.statusCode == 200) {
+                           // data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('base64');
+                            var attachment_img = new Buffer(body,'binary');
+                            var request_body= attachment_img ;
+                            console.log(attachment_img);
+                            request
+                                  .post( "https://api.projectoxford.ai/face/v1.0" + "/detect?")
+                                  .query({returnFaceId: true})
+                                  .query({returnFaceLandmarks: true})
+                                  .query({returnFaceAttributes: "age,gender"})
+                                  .set('Content-Type', 'application/octet-stream')
+                                  .set('Ocp-Apim-Subscription-Key', '8f7a031e5133417aa8b1f1ab525efec1' )
+                                  .send(request_body)
+                                  .end(function(error, response) {
+                                        console.log('%s &&&&&&&&&&&',response.statusCode); 
+                                        if(!error && response.statusCode == 200) {
+                                            var myJson = JSON.parse(JSON.stringify(response.body));
+                                            console.log(myJson[0].faceRectangle.top);//work
+                                            var u= session.message.attachments[0].contentUrl;
+                                            gm(httprequest(u))
+                                                .stroke("#123456")
+                                                .drawCircle(100, 100, 200, 100)
+                                                .write('./final.jpg', function (err) {
+                                                if (!err) console.log('doooooone');
+                                                 console.log(err);
+                                                });
+                                            return callback(null, response.body);
+                                        } else {
+
+                                          console.log(response.body);
+                                            return callback(error);
+                                        }
+                                  });      
+
+                        }else{
+                          console.log(response.statusCode);
+                        }
+                    });
+
+                      /* fs.readFile('C:/Users/v-huhaor/Desktop/BotFramework/reformat.jpg', function(err, data) {
                           if (err) throw err;
                     
                           
@@ -81,10 +121,10 @@ bot.dialog('/', [
                           // Encode to base64
                           var img = new Buffer(data, 'binary');
                            
-                         console.log(img);
+                         //console.log(img);
                            
-                        
-                         var request_body= img ;
+                          var request_body= img ;
+                         
                           
                        
                     
@@ -102,13 +142,13 @@ bot.dialog('/', [
                                     
                                     var myJson = JSON.parse(JSON.stringify(response.body));
                                     console.log(myJson[0].faceRectangle.top);//work
-                                    var u="http://az616578.vo.msecnd.net/files/2016/08/02/636057537990540091900905774_pics-girls-7.jpg";
+                                    var u= session.message.attachments[0].contentUrl;
                                     gm(httprequest(u))
-                                        .stroke("#ffffff")
-                                        .drawCircle(10, 10, 20, 10)
+                                        .stroke("#123456")
+                                        .drawCircle(100, 100, 200, 100)
                                        
                                         .write('./reformat.jpg', function (err) {
-                                        if (!err) console.log('done');
+                                        if (!err) console.log('doooooone');
                                          console.log(err);
                                         });
                                     return callback(null, response.body);
@@ -121,7 +161,7 @@ bot.dialog('/', [
                         });
                      
                    
-                        });
+                        });*/
                
                  //object
                 console.log('%s listening to',session.message.attachments[0].contentType); 
