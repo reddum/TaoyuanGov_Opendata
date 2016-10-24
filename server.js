@@ -24,7 +24,8 @@ var fs = require('fs')
   , gm = require('gm') ;
 
 var azure = require('azure-storage'); 
-var blobSvc = azure.createBlobServiceAnonymous('http://13threaltimeinsight.blob.core.windows.net/imagescontainer/');
+var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84gDgbYmVQiOdtGtiS9m/8AGoL1xPGK3Yyqso+lgz8wKCyG0vzZVi+UQvyn9L+e+K1CC/w==');
+
 
 gm('./testpng.png')
  
@@ -119,24 +120,47 @@ bot.dialog('/', [
                                                  .drawLine(x,y,x,y+height)
                                                  .drawLine(x,y+height,x+width,y+height)
                                                  .drawLine(x+width,y,x+width,y+height);
-                                            }/*
+                                            }
                                             var writeStream ;
-                                            pic.toBuffer('JPG',function (err, buffer) {
+                                            /*pic.toBuffer('JPG',function (err, buffer) {
                                                   if (err) return handle(err);
                                                   console.log('done!');
                                                   console.log(buffer);
                                                   
 
 
-                                                });
-                                            blobSvc.createBlockBlobFromLocalFile('imagescontainer', '13threaltimeinsight', './final.jpg', function(error, result, response){
+                                                });*/
+                                            pic.write('./output.jpg', function (err) {
+                                                if (!err) {
+                                                  console.log('doooooone');
+                                                  blobSvc.createBlockBlobFromLocalFile('imagescontainer', 'output.jpg', './output.jpg', function(error, result, response){
                                                 if(error){
                                                           console.log("Couldn't upload stream");
                                                           console.error(error);
                                                       } else {
+                                                        console.log(result);
+                                                        console.log(response.statusCode);
                                                           console.log('Stream uploaded successfully');
+                                                          console.log('%s listening to',session.message.attachments[0].contentType); 
+                                                          
+                                                          
+
                                                       }
-                                              });*/
+                                                      var msg = new builder.Message(session);
+                                                      
+                                                          msg.attachments([{
+                                                          
+                                                          contentType: "image/jpeg",
+                                                          contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/"+"output.jpg",
+                                                          //SMILE
+                                                           }]);
+                                                          session.endDialog(msg);   
+                                              });
+
+                                              }
+                                                 console.log(err);
+                                            });
+                                            
                                             /*blobSvc.createBlockBlobFromStream(
                                                   'imagescontainer',
                                                   '13threaltimeinsight',
@@ -153,10 +177,7 @@ bot.dialog('/', [
 
 
 
-                                            pic.write('./output.jpg', function (err) {
-                                                if (!err) console.log('doooooone');
-                                                 console.log(err);
-                                                });
+                                            
                                             /*
                                             gm(httprequest(u))
                                                 .stroke('#FFBB00')
@@ -179,17 +200,7 @@ bot.dialog('/', [
                                         }
                                   }); 
                                   //object
-                console.log('%s listening to',session.message.attachments[0].contentType); 
-                // face api
-                var msg = new builder.Message(session)
-            
-                .attachments([{
-                
-                contentType: "image/jpeg",
-                contentUrl: "http://oxfordface-bot.azurewebsites.net/output.jpg",
-                //SMILE
-                 }]);
-                session.endDialog(msg);     
+                  
 
                         }else{
                           console.log(response.statusCode);
