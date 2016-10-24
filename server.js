@@ -75,7 +75,7 @@ bot.dialog('/', [
              session.endDialog(msg);
          }else if(typeof session.message.attachments[0] !== 'undefined'){
 
-            if(session.message.attachments[0].contentType == 'image/jpeg' || session.message.attachments[0].contentType == 'image/png'){
+            //if(session.message.attachments[0].contentType == 'image/jpeg' || session.message.attachments[0].contentType == 'image/png'){
                     
                     httprequest.get(session.message.attachments[0].contentUrl, function (error, response, body) {
                         
@@ -177,7 +177,19 @@ bot.dialog('/', [
                                           console.log(response.body);
                                             return callback(error);
                                         }
-                                  });      
+                                  }); 
+                                  //object
+                console.log('%s listening to',session.message.attachments[0].contentType); 
+                // face api
+                var msg = new builder.Message(session)
+            
+                .attachments([{
+                
+                contentType: "image/jpeg",
+                contentUrl: "http://oxfordface-bot.azurewebsites.net/output.jpg",
+                //SMILE
+                 }]);
+                session.endDialog(msg);     
 
                         }else{
                           console.log(response.statusCode);
@@ -235,20 +247,9 @@ bot.dialog('/', [
                    
                         });*/
                
-                 //object
-                console.log('%s listening to',session.message.attachments[0].contentType); 
-                // face api
-                var msg = new builder.Message(session)
-            
-                .attachments([{
-                
-                contentType: "image/jpeg",
-                contentUrl: "http://oxfordface-bot.azurewebsites.net/output.jpg",
-                //SMILE
-                 }]);
-                session.endDialog(msg);
+                 
              
-         }
+         //}  jpg png
                 
          }
          else{
