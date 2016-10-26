@@ -110,7 +110,7 @@ bot.dialog('/', [
                                             var u= session.message.attachments[0].contentUrl;
                                             var pic=gm(httprequest(u));
                                             pic.stroke('#FFBB00')
-                                               .strokeWidth(4);
+                                               .strokeWidth(6);
                                             for(i=0;i<myJson.length;i++){
                                               var x=myJson[i].faceRectangle.left;
                                               var y=myJson[i].faceRectangle.top;
@@ -130,10 +130,13 @@ bot.dialog('/', [
 
 
                                                 });*/
-                                            pic.write('./output.jpg', function (err) {
+                                            var filename=(Math.random() + 1).toString(24).substring(4)+'.jpg';
+                                            console.log(filename);
+                                            var dir_filename='./'+filename+'.jpg';
+                                            pic.write(dir_filename, function (err) {
                                                 if (!err) {
-                                                  console.log('doooooone');
-                                                  blobSvc.createBlockBlobFromLocalFile('imagescontainer', 'output.jpg', './output.jpg', function(error, result, response){
+                                                  //console.log('doooooone');
+                                                  blobSvc.createBlockBlobFromLocalFile('imagescontainer', filename, dir_filename, function(error, result, response){
                                                 if(error){
                                                           console.log("Couldn't upload stream");
                                                           console.error(error);
@@ -151,7 +154,7 @@ bot.dialog('/', [
                                                           msg.attachments([{
                                                           
                                                           contentType: "image/jpeg",
-                                                          contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/"+"output.jpg",
+                                                          contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/"+filename,
                                                           //SMILE
                                                            }]);
                                                           session.endDialog(msg);   
