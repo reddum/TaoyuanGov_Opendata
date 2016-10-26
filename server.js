@@ -26,13 +26,13 @@ var fs = require('fs')
 var azure = require('azure-storage'); 
 var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84gDgbYmVQiOdtGtiS9m/8AGoL1xPGK3Yyqso+lgz8wKCyG0vzZVi+UQvyn9L+e+K1CC/w==');
 
-
+/*
 gm('./testpng.png')
  
 .write('./outpng.png', function (err) {
   if (!err) console.log('done');
   console.log(err);
-});
+});*/
 
 
 //=========================================================
