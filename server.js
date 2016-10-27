@@ -29,11 +29,8 @@ var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84g
 var person_index;
 var personid;
 var person_confidence=1;
-var Canvas = require('canvas')
-  , Image = Canvas.Image
-  , canvas = new Canvas(200, 200)
-  , ctx = canvas.getContext('2d');
-var PImage = require('pureimage');
+ 
+ 
 /*
 gm('./testpng.png')
  
