@@ -22,13 +22,15 @@ function base64ToArrayBuffer(base64) {
 }
 
 var fs = require('fs')
-  , gm = require('gm').subClass({imageMagick: true});  
+  , gm = require('gm');  
 
 var azure = require('azure-storage'); 
 var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84gDgbYmVQiOdtGtiS9m/8AGoL1xPGK3Yyqso+lgz8wKCyG0vzZVi+UQvyn9L+e+K1CC/w==');
-var person_index;
+var person_index=-1;
 var personid;
 var person_confidence=1;
+var young_person_index;
+var max_age=999;
  
  
 /*
@@ -124,6 +126,12 @@ bot.dialog('/', [
                                             var myJson = JSON.parse(JSON.stringify(response.body));
                                             console.log(myJson.length);
                                             console.log(myJson[0].faceAttributes.age);//work
+                                            for(i=0;i<myJson.length;i++){
+                                              if(myJson[i].faceAttributes.age<max_age){
+                                                young_person_index=i;
+                                                max_age=myJson[i].faceAttributes.age;
+                                              }
+                                            }
                                             var faceid="";
                                             for(j=0;j<myJson.length;j++){
                                                 faceid=faceid+myJson[j].faceId;
@@ -169,17 +177,30 @@ bot.dialog('/', [
                                                     
                                                    
                                                             var localurl= session.message.attachments[0].contentUrl;
+                                                            console.log(person_index);
+                                                            console.log(young_person_index);
                                                             console.log(localurl);
-                                                            console.log(myJson[person_index].faceRectangle.left);
+                                                            //console.log(myJson[person_index].faceRectangle.left);
                                                             var pic=gm(httprequest(localurl));
-                                                            console.log(myJson[person_index].faceRectangle.left);
+                                                            //console.log(myJson[person_index].faceRectangle.left);
                                                             pic.stroke('#FFBB00')
                                                                .strokeWidth(8);
+                                                            var x;
+                                                            var y;
+                                                            var width;
+                                                            var height;
+                                                            if(person_index==-1){
+                                                                   x=myJson[young_person_index].faceRectangle.left;
+                                                                   y=myJson[young_person_index].faceRectangle.top;
+                                                                   width=myJson[young_person_index].faceRectangle.width;
+                                                                   height=myJson[young_person_index].faceRectangle.height;
+                                                            }else{
+                                                                   x=myJson[person_index].faceRectangle.left;
+                                                                   y=myJson[person_index].faceRectangle.top;
+                                                                   width=myJson[person_index].faceRectangle.width;
+                                                                   height=myJson[person_index].faceRectangle.height;
+                                                            }
                                                             
-                                                            var x=myJson[person_index].faceRectangle.left;
-                                                            var y=myJson[person_index].faceRectangle.top;
-                                                            var width=myJson[person_index].faceRectangle.width;
-                                                            var height=myJson[person_index].faceRectangle.height;
 
                                                             pic.drawLine(x,y,x+width,y)
                                                                 .drawLine(x,y,x,y+height)
