@@ -54,8 +54,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
   
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MICROSOFT_APP_ID || "fb994393-c778-4201-834e-ab09d051453c", 
+    appPassword: process.env.MICROSOFT_APP_PASSWORD || "yP5fyHtaNn2GFpyqVzTSKGk"
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -181,7 +181,7 @@ bot.dialog('/', [
                                                             console.log(young_person_index);
                                                             console.log(localurl);
                                                             //console.log(myJson[person_index].faceRectangle.left);
-                                                            var pic=gm(httprequest(localurl));
+                                                            var pic=gm(httprequest(options));
                                                             //console.log(myJson[person_index].faceRectangle.left);
                                                             pic.stroke('#FFBB00')
                                                                .strokeWidth(8);
@@ -210,9 +210,9 @@ bot.dialog('/', [
                                                             var writeStream ;
                                                             var filename=(Math.random() + 1).toString(24).substring(4)+'.jpg';
                                                             console.log(filename);
-                                                            var dir_filename='./'+filename+'.jpg';
+                                                            var dir_filename='./'+filename;
                                                             console.log(dir_filename);
-                                                            pic.write(dir_filename, function (err) {
+                                                            pic.write(filename, function (err) {
                                                                   if (!err) {
                                                                   blobSvc.createBlockBlobFromLocalFile('imagescontainer', filename, dir_filename, function(error, result, response){
                                                                       if(error){
