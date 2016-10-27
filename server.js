@@ -7,7 +7,8 @@ var request = require("superagent");
 var httprequest = require('request').defaults({ encoding: null });
 
 const captionService = require('./caption-service'),
-    needle = require("needle");
+    needle = require("needle"),
+    url = require('url');
 
 var wtf;
 function base64ToArrayBuffer(base64) {
@@ -80,8 +81,26 @@ bot.dialog('/', [
          else if(typeof session.message.attachments[0] !== 'undefined'){
 
             //if(session.message.attachments[0].contentType == 'image/jpeg' || session.message.attachments[0].contentType == 'image/png'){
-                    
-                    httprequest.get(session.message.attachments[0].contentUrl, function (error, response, body) {
+                    //var buffer_stream = getImageStreamFromUrl(session.message.attachments[0]);
+                    var tok; 
+                    connector.getAccessToken((error, token) => { 
+                         tok=token;
+                         
+
+             
+                        
+                    }); 
+
+                    var options = {
+                          url: session.message.attachments[0].contentUrl,
+                          headers: {
+                            'Content-Type': 'application/octet-stream',
+                            'Authorization':'Bearer ' + tok
+                          }
+                        };
+
+                     //console.log(buffer_stream);
+                    httprequest.get(options, function (error, response, body) {
                         
                         if (!error && response.statusCode == 200) {
                              
@@ -230,7 +249,7 @@ bot.dialog('/', [
                                             return callback(null, response.body);
 
                                         } else {
-
+                                             console.log('%s zzzzzzz&',response.statusCode); 
                                            console.log(response.body);
                                             return callback(error);
                                         }
@@ -241,6 +260,7 @@ bot.dialog('/', [
                         }else{
                           console.log(response.statusCode);
                           console.log(error);
+                          console.log(body);
                         }
                     });
                          /*
