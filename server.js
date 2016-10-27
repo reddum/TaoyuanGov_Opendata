@@ -5,7 +5,7 @@ var face = new Face("8f7a031e5133417aa8b1f1ab525efec1");
 var request = require("superagent");
  
 var httprequest = require('request').defaults({ encoding: null });
-;
+
 const captionService = require('./caption-service'),
     needle = require("needle");
 
@@ -25,7 +25,9 @@ var fs = require('fs')
 
 var azure = require('azure-storage'); 
 var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84gDgbYmVQiOdtGtiS9m/8AGoL1xPGK3Yyqso+lgz8wKCyG0vzZVi+UQvyn9L+e+K1CC/w==');
-
+var person_index;
+var personid;
+var person_confidence=1;
 /*
 gm('./testpng.png')
  
@@ -74,17 +76,15 @@ bot.dialog('/', [
                 contentUrl: "http://www.bonavida.com.hk/wp-content/uploads/2014/02/101413-Kobe.jpg",
             }]);
              session.endDialog(msg);
-         }else if(typeof session.message.attachments[0] !== 'undefined'){
+         }
+         else if(typeof session.message.attachments[0] !== 'undefined'){
 
             //if(session.message.attachments[0].contentType == 'image/jpeg' || session.message.attachments[0].contentType == 'image/png'){
                     
                     httprequest.get(session.message.attachments[0].contentUrl, function (error, response, body) {
                         
                         if (!error && response.statusCode == 200) {
-                            //data = "data:" + response.headers["content-type"] + ";base64," + new Buffer(body).toString('binary');
-                            //console.log(data);
-                           //console.log(response);
-                            //console.log(body);
+                             
                             var attachment_img = new Buffer(body,'binary');
                             console.log(attachment_img);
                             var request_body= attachment_img ;
@@ -103,102 +103,137 @@ bot.dialog('/', [
                                             var myJson = JSON.parse(JSON.stringify(response.body));
                                             console.log(myJson.length);
                                             console.log(myJson[0].faceAttributes.age);//work
-                                            var x=myJson[0].faceRectangle.left;
-                                            var y=myJson[0].faceRectangle.top;
-                                            var width=myJson[0].faceRectangle.width;
-                                            var height=myJson[0].faceRectangle.height;
-                                            var u= session.message.attachments[0].contentUrl;
-                                            var pic=gm(httprequest(u));
-                                            pic.stroke('#FFBB00')
-                                               .strokeWidth(6);
-                                            for(i=0;i<myJson.length;i++){
-                                              var x=myJson[i].faceRectangle.left;
-                                              var y=myJson[i].faceRectangle.top;
-                                              var width=myJson[i].faceRectangle.width;
-                                              var height=myJson[i].faceRectangle.height;
-                                              pic.drawLine(x,y,x+width,y)
-                                                 .drawLine(x,y,x,y+height)
-                                                 .drawLine(x,y+height,x+width,y+height)
-                                                 .drawLine(x+width,y,x+width,y+height);
+                                            var faceid="";
+                                            for(j=0;j<myJson.length;j++){
+                                                faceid=faceid+myJson[j].faceId;
+                                                if(j!=myJson.length-1){
+                                                  faceid=faceid+",";
+                                                }
                                             }
-                                            var writeStream ;
-                                            /*pic.toBuffer('JPG',function (err, buffer) {
-                                                  if (err) return handle(err);
-                                                  console.log('done!');
-                                                  console.log(buffer);
-                                                  
-
-
-                                                });*/
-                                            var filename=(Math.random() + 1).toString(24).substring(4)+'.jpg';
-                                            console.log(filename);
-                                            var dir_filename='./'+filename+'.jpg';
-                                            pic.write(dir_filename, function (err) {
-                                                if (!err) {
-                                                  //console.log('doooooone');
-                                                  blobSvc.createBlockBlobFromLocalFile('imagescontainer', filename, dir_filename, function(error, result, response){
-                                                if(error){
-                                                          console.log("Couldn't upload stream");
-                                                          console.error(error);
-                                                      } else {
-                                                        console.log(result);
-                                                        console.log(response.statusCode);
-                                                          console.log('Stream uploaded successfully');
-                                                          console.log('%s listening to',session.message.attachments[0].contentType); 
-                                                          
-                                                          
-
-                                                      }
-                                                      var msg = new builder.Message(session);
-                                                      
-                                                          msg.attachments([{
-                                                          
-                                                          contentType: "image/jpeg",
-                                                          contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/"+filename,
-                                                          //SMILE
-                                                           }]);
-                                                          session.endDialog(msg);   
-                                              });
-
-                                              }
-                                                 console.log(err);
-                                            });
+                                            var array = faceid.split(',');
+                                            var identify_reqbody={
+                                                    "personGroupId":"mtcbotdemo",
+                                                    "faceIds":array,
+                                                    "maxNumOfCandidatesReturned":1,
+                                                    "confidenceThreshold": 0.5
+                                            };
                                             
-                                            /*blobSvc.createBlockBlobFromStream(
-                                                  'imagescontainer',
-                                                  '13threaltimeinsight',
-                                                  buffer,
-                                                  buffer.length,
-                                                  function(error, result, response){
-                                                      if(error){
-                                                          console.log("Couldn't upload stream");
-                                                          console.error(error);
-                                                      } else {
-                                                          console.log('Stream uploaded successfully');
-                                                      }
-                                                  });*/
+                                            request
+                                            .post( "https://api.projectoxford.ai/face/v1.0" + "/identify")
+                                            .set('Content-Type', 'application/json')
+                                            .set('Ocp-Apim-Subscription-Key', '8f7a031e5133417aa8b1f1ab525efec1' )
+                                            .send(identify_reqbody)
+                                            .end(function(error, response) {
+                                                console.log(session.message.attachments[0].contentUrl);
+                                               
+                                                var lock=0;
+                                                if(!error && response.statusCode == 200) {
+                                                var identify_Json = JSON.parse(JSON.stringify(response.body));
+                                                //console.log(myJson.length);
+                                                //console.log(myJson[0].faceAttributes.age);//work
+                                                var i_index;
+                                                console.log(identify_Json.length);
+                                                 console.log("lolololololololololo");
+                                                  for(i_index=0;i_index<identify_Json.length;i_index++){
+                                                       console.log(identify_Json[i_index].candidates.length);
+                                                       if(identify_Json[i_index].candidates.length!=0){
+                                                        person_index=i_index;
+                                                        personid=identify_Json[i_index].candidates[0].personId;
+                                                        person_confidence=identify_Json[i_index].candidates[0].confidence;
+                                                        console.log(identify_Json[i_index].candidates[0].confidence);
+                                                        console.log(personid);
+                                                       }
+  
+                                                  }
+                                                   // console.log(i_index);
+                                                    console.log("asdfasdasdasdasd"+person_index);
+                                                    console.log("asdfasdasdasdasd"+session.message.attachments[0].contentUrl);
+                                                   
+                                                            var localurl= session.message.attachments[0].contentUrl;
+                                                            console.log(localurl);
+                                                            console.log(myJson[person_index].faceRectangle.left);
+                                                            var pic=gm(httprequest(localurl));
+                                                            console.log(myJson[person_index].faceRectangle.left);
+                                                            pic.stroke('#FFBB00')
+                                                               .strokeWidth(8);
+                                                            
+                                                            var x=myJson[person_index].faceRectangle.left;
+                                                            var y=myJson[person_index].faceRectangle.top;
+                                                            var width=myJson[person_index].faceRectangle.width;
+                                                            var height=myJson[person_index].faceRectangle.height;
 
+                                                            pic.drawLine(x,y,x+width,y)
+                                                                .drawLine(x,y,x,y+height)
+                                                                .drawLine(x,y+height,x+width,y+height)
+                                                                 .drawLine(x+width,y,x+width,y+height);
+                                                            
+                                                            var writeStream ;
+                                                            var filename=(Math.random() + 1).toString(24).substring(4)+'.jpg';
+                                                            console.log(filename);
+                                                            var dir_filename='./'+filename+'.jpg';
+                                                            console.log(dir_filename);
+                                                            pic.write(dir_filename, function (err) {
+                                                                  if (!err) {
+                                                                  blobSvc.createBlockBlobFromLocalFile('imagescontainer', filename, dir_filename, function(error, result, response){
+                                                                      if(error){
+                                                                                console.log("Couldn't upload stream");
+                                                                                console.error(error);
+                                                                            }
+                                                                            else {
+                                                                              console.log(result);
+                                                                              console.log(response.statusCode);
+                                                                              console.log('Stream uploaded successfully');
+                                                                              console.log('%s listening to',session.message.attachments[0].contentType); 
+                                                                            }
+                                                                            var msg = new builder.Message(session);
+                                                    
+                                                                                msg.attachments([{
+                                                                                contentType: "image/jpeg",
+                                                                                contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/"+filename,
+                                                                                //SMILE
+                                                                                 }]);
+                                                                                session.endDialog(msg);   
+                                                                  });
 
+                                                                  }else{
+                                                                  console.log(err);
+                                                                  }
 
-                                            
-                                            /*
-                                            gm(httprequest(u))
-                                                .stroke('#FFBB00')
-                                                .strokeWidth(4)
+                                                            });
+                                                             /*
+                                                             request
+                                                            .get( "https://api.projectoxford.ai/face/v1.0" + "/persongroups/"+"mtcbotdemo/persons/"+personid)
+                                                            
+                                                            .set('Ocp-Apim-Subscription-Key', '8f7a031e5133417aa8b1f1ab525efec1' )
+                                                             
+                                                            .end(function(error, response) {
+                                                                 if(!error && response.statusCode == 200) {
+                                                                  console.log(response.statusCode);
+                                                                    var Per_J = JSON.parse(JSON.stringify(response.body));
+                                                                    console.log( "adasdasdasdasdasdasdasdas" );
+                                                                 }
+                                                                 else{
+                                                                     console.log(response.statusCode);
+                                                                     console.log(error);
+                                                                }
+                                                            });*/
 
-                                                .drawLine(x,y,x+width,y)
-                                                .drawLine(x,y,x,y+height)
-                                                .drawLine(x,y+height,x+width,y+height)
-                                                .drawLine(x+width,y,x+width,y+height)
-                                                //.drawCircle(myJson[0].faceRectangle.left, myJson[0].faceRectangle.top, myJson[0].faceRectangle.width,myJson[0].faceRectangle.height)
-                                                .write('./final.jpg', function (err) {
-                                                if (!err) console.log('doooooone');
-                                                 console.log(err);
-                                                });*/
+                                                    
+
+                                                }
+                                                else{
+                                                console.log(response.statusCode);
+                                                console.log(error);
+                                                }
+                                                
+                                                 
+                                            });  
+                                             
                                             return callback(null, response.body);
+
                                         } else {
 
-                                          console.log(response.body);
+                                           console.log(response.body);
                                             return callback(error);
                                         }
                                   }); 
@@ -263,7 +298,7 @@ bot.dialog('/', [
                
                  
              
-         //}  jpg png
+          
                 
          }
          else{
