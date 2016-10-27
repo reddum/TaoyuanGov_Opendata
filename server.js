@@ -6,8 +6,8 @@ var request = require("superagent");
  
 var httprequest = require('request').defaults({ encoding: null });
 
-const captionService = require('./caption-service'),
-    needle = require("needle"),
+  
+const needle = require("needle"),
     url = require('url');
 
 var wtf;
