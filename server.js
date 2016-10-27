@@ -22,13 +22,18 @@ function base64ToArrayBuffer(base64) {
 }
 
 var fs = require('fs')
-  , gm = require('gm') ;
+  , gm = require('gm').subClass({imageMagick: true});  
 
 var azure = require('azure-storage'); 
 var blobSvc = azure.createBlobService('13threaltimeinsight','fKxio8XGO776YjVV84gDgbYmVQiOdtGtiS9m/8AGoL1xPGK3Yyqso+lgz8wKCyG0vzZVi+UQvyn9L+e+K1CC/w==');
 var person_index;
 var personid;
 var person_confidence=1;
+var Canvas = require('canvas')
+  , Image = Canvas.Image
+  , canvas = new Canvas(200, 200)
+  , ctx = canvas.getContext('2d');
+var PImage = require('pureimage');
 /*
 gm('./testpng.png')
  
