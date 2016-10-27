@@ -145,9 +145,7 @@ bot.dialog('/', [
                                                        }
   
                                                   }
-                                                   // console.log(i_index);
-                                                    console.log("asdfasdasdasdasd"+person_index);
-                                                    console.log("asdfasdasdasdasd"+session.message.attachments[0].contentUrl);
+                                                    
                                                    
                                                             var localurl= session.message.attachments[0].contentUrl;
                                                             console.log(localurl);
@@ -242,6 +240,7 @@ bot.dialog('/', [
 
                         }else{
                           console.log(response.statusCode);
+                          console.log(error);
                         }
                     });
                          /*
