@@ -25,6 +25,7 @@ var max_smile_value=0;
 var smile_person_index=-1;
 var filename,smile_filename,dir_filename,smdir_filename;
 var FACEKEY = "8f7a031e5133417aa8b1f1ab525efec1";
+var CROP = true;
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -239,11 +240,14 @@ function upLoadImage(att_url,session) {
                                             .drawLine(x, y, x, y + height)
                                             .drawLine(x, y + height, x + width, y + height)
                                             .drawLine(x + width, y, x + width, y + height);
-
-                                         smile_pic.drawLine(smile_x, smile_y, smile_x + smile_width, smile_y)
-                                            .drawLine(smile_x, smile_y, smile_x, smile_y + smile_height)
-                                            .drawLine(smile_x, smile_y + smile_height, smile_x + smile_width, smile_y + smile_height)
-                                            .drawLine(smile_x + smile_width, smile_y, smile_x + smile_width, smile_y + smile_height);
+                                         if (CROP) {
+                                             smile_pic.crop(smile_width, smile_height, smile_x, smile_y);
+                                         } else {
+                                             smile_pic.drawLine(smile_x, smile_y, smile_x + smile_width, smile_y)
+                                                .drawLine(smile_x, smile_y, smile_x, smile_y + smile_height)
+                                                .drawLine(smile_x, smile_y + smile_height, smile_x + smile_width, smile_y + smile_height)
+                                                .drawLine(smile_x + smile_width, smile_y, smile_x + smile_width, smile_y + smile_height);
+                                         }
                                          filename = (Math.random() + 1).toString(24).substring(4) + '.jpg';
 
                                          smile_filename = 'sm_' + filename;
