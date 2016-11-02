@@ -1,4 +1,4 @@
-﻿var restify = require('restify');
+var restify = require('restify');
 var builder = require('botbuilder');
 var restify = require('restify');
 var builder = require('botbuilder');
@@ -298,7 +298,7 @@ function upLoadImage(att_url,session) {
                                                          console.log('smile Stream uploaded successfully');
                                                          
                                                      }
-                                                     session.endDialog(msg);
+                                                    // session.endDialog(msg);
                                                  });
                                              } else {
                                                  console.log(err);
@@ -311,7 +311,7 @@ function upLoadImage(att_url,session) {
                                      }
                                  });
 
-                           return callback(null, response.body);
+                          // return callback(null, response.body);
 
                        }
                        else {
