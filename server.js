@@ -41,8 +41,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID || "46f3c125-0de0-4793-aa9e-7f2cea05edd8",
-    appPassword: process.env.MICROSOFT_APP_PASSWORD || "cd8fTteMdf629yCub4ecTjR"
+    appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
+    appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -122,7 +122,13 @@ dialog.matches('請客', [
             }
             reply_str = '當然是看起來最年輕的要請客囉~~就是你啦不要躲，看起來你只有' + max_age + '歲呢!!';
         } else {
-            reply_str = '當然是'+FinalName+'要請客拉!!，謝謝總經理 づ(ˊ● ω ●ˋ)づ Let' + '\'s GO~';
+            var title_str;
+            if(FinalName=="微軟總經理Jerry"){
+              title_str="總經理";
+            }else if(FinalName=="微軟副總經理KC"){
+               title_str="副總經理";
+            }
+            reply_str = '當然是'+FinalName+'要請客拉!!，謝謝'+title_str+' づ(ˊ● ω ●ˋ)づ Let' + '\'s GO~';
             person_index = -1;
         }
         session.send(reply_str);
