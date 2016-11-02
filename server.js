@@ -38,8 +38,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
-    appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
+    appId: process.env.MICROSOFT_APP_ID || "46f3c125-0de0-4793-aa9e-7f2cea05edd8",
+    appPassword: process.env.MICROSOFT_APP_PASSWORD || "cd8fTteMdf629yCub4ecTjR"
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -60,11 +60,6 @@ bot.dialog('/', dialog);
 dialog.matches('你好', [
   function (session, args, next) {
       builder.Prompts.attachment(session, '請上傳一張照片讓我看看在場的俊男美女');
-      if (results.response) {
-          session.beginDialog('/mygender', args);     //dialog mygender
-      } else {
-          next();
-      }
   },
    function (session, results) {
        if (typeof session.message.attachments[0] !== 'undefined') {
