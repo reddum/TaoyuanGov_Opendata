@@ -26,6 +26,9 @@ var smile_person_index=-1;
 var filename,smile_filename,dir_filename,smdir_filename;
 var FACEKEY = "8f7a031e5133417aa8b1f1ab525efec1";
 var CROP = true;
+var KC_ID="7c1e96f9-c73c-4eea-951b-61aab07c1b16";
+var JERRY_ID="16ef3542-84b4-448e-9250-9f57773f183b";
+var FinalName=""; 
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -124,7 +127,7 @@ dialog.matches('請客', [
             }
             reply_str = '當然是看起來最年輕的要請客囉~~就是你啦不要躲，看起來你只有' + max_age + '歲呢!!';
         } else {
-            reply_str = '當然是微軟總經理Jerry要請客拉!!，謝謝總經理 づ(ˊ● ω ●ˋ)づ Let' + '\'s GO~';
+            reply_str = '當然是'+FinalName+'要請客拉!!，謝謝總經理 づ(ˊ● ω ●ˋ)づ Let' + '\'s GO~';
             person_index = -1;
         }
         session.send(reply_str);
@@ -205,6 +208,12 @@ function upLoadImage(att_url,session) {
                                                  person_index = i_index;
                                                  personid = identify_Json[i_index].candidates[0].personId;
                                                  person_confidence = identify_Json[i_index].candidates[0].confidence;
+                                                 if(personid==JERRY_ID){
+                                                  FinalName="微軟總經理Jerry";
+                                                  break;
+                                                 }else if(personid==KC_ID){
+                                                  FinalName="微軟副總經理KC";
+                                                 }
 
                                              }
 
