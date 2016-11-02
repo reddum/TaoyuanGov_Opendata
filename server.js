@@ -38,8 +38,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID ,//|| "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
-    appPassword: process.env.MICROSOFT_APP_PASSWORD //|| "tZtei6Px5cY90yxTkP9HdQ6"
+    appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
+    appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -111,6 +111,12 @@ dialog.matches('請客', [
 
     function (session, args, next) {
        // builder.Prompts.attachment(session, '請上傳一張照片讓我看看今天午餐誰來請客');
+       var msg = new builder.Message(session);
+        msg.attachments([{
+            contentType: "image/jpeg",
+            contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/" + filename,
+        }]);
+        session.endDialog(msg);
         var reply_str = "";
         if (person_index == -1) {
             if (max_age > 1) {
@@ -122,12 +128,7 @@ dialog.matches('請客', [
             person_index = -1;
         }
         session.send(reply_str);
-        var msg = new builder.Message(session);
-        msg.attachments([{
-            contentType: "image/jpeg",
-            contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/" + filename,
-        }]);
-        session.endDialog(msg);
+        
     },
 
     function (session, results) {
