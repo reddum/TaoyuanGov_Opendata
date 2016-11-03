@@ -41,8 +41,10 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({
+ 
     appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
     appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
+ 
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
@@ -96,7 +98,9 @@ dialog.matches('開心', [
           contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/" + smile_filename,
       }]);
       session.endDialog(msg);
+ 
       var reply_str = '他看起來笑得最燦爛，笑顏值有' + max_smile_value + '分這麼高呢!';
+ 
       session.send(reply_str);  //Send Photo CT建議放大開心那個人的臉部比較有效果
       max_smile_value = 0;
   },
@@ -180,19 +184,23 @@ function upLoadImage(att_url,session) {
                            }
 
                            var faceid = "";
+ 
                            for (j = 0; j < myJson.length; j++) {
                                faceid = faceid + myJson[j].faceId;
                                if (j != myJson.length - 1) {
+ 
                                    faceid = faceid + ",";
                                }
                            }
                            var array = faceid.split(',');
-                            
+ 
                            var identify_reqbody = {
                                "personGroupId": "mtcbotdemo",
                                "faceIds": array,
                                "maxNumOfCandidatesReturned": 1,
+ 
                                "confidenceThreshold": 0.623
+ 
                            };
 
                            request
@@ -210,7 +218,7 @@ function upLoadImage(att_url,session) {
                                                  person_index = i_index;
                                                  personid = identify_Json[i_index].candidates[0].personId;
                                                  person_confidence = identify_Json[i_index].candidates[0].confidence;
-                                                 console.log(personid+":"+person_confidence);
+ 
                                                  if(personid==JERRY_ID){
                                                   FinalName="微軟總經理Jerry";
                                                   break;
