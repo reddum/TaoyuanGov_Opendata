@@ -42,6 +42,7 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 // Create chat bot
 var connector = new builder.ChatConnector({
  
+ 
     appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
     appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
  
@@ -99,7 +100,9 @@ dialog.matches('開心', [
       }]);
       session.endDialog(msg);
  
+ 
       var reply_str = '他看起來笑得最燦爛，笑顏值有' + max_smile_value + '分這麼高呢!';
+ 
  
       session.send(reply_str);  //Send Photo CT建議放大開心那個人的臉部比較有效果
       max_smile_value = 0;
@@ -185,6 +188,7 @@ function upLoadImage(att_url,session) {
 
                            var faceid = "";
  
+ 
                            for (j = 0; j < myJson.length; j++) {
                                faceid = faceid + myJson[j].faceId;
                                if (j != myJson.length - 1) {
@@ -198,6 +202,7 @@ function upLoadImage(att_url,session) {
                                "personGroupId": "mtcbotdemo",
                                "faceIds": array,
                                "maxNumOfCandidatesReturned": 1,
+ 
  
                                "confidenceThreshold": 0.623
  
