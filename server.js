@@ -96,7 +96,7 @@ dialog.matches('開心', [
           contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/" + smile_filename,
       }]);
       session.endDialog(msg);
-      var reply_str = '他看起來笑得最燦爛，笑顏值有' + max_smile_value*100 + '分這麼高呢!';
+      var reply_str = '他看起來笑得最燦爛，笑顏值有' + max_smile_value + '分這麼高呢!';
       session.send(reply_str);  //Send Photo CT建議放大開心那個人的臉部比較有效果
       max_smile_value = 0;
   },
@@ -187,11 +187,12 @@ function upLoadImage(att_url,session) {
                                }
                            }
                            var array = faceid.split(',');
+                            
                            var identify_reqbody = {
                                "personGroupId": "mtcbotdemo",
                                "faceIds": array,
                                "maxNumOfCandidatesReturned": 1,
-                               "confidenceThreshold": 0.5
+                               "confidenceThreshold": 0.623
                            };
 
                            request
@@ -209,6 +210,7 @@ function upLoadImage(att_url,session) {
                                                  person_index = i_index;
                                                  personid = identify_Json[i_index].candidates[0].personId;
                                                  person_confidence = identify_Json[i_index].candidates[0].confidence;
+                                                 console.log(personid+":"+person_confidence);
                                                  if(personid==JERRY_ID){
                                                   FinalName="微軟總經理Jerry";
                                                   break;
