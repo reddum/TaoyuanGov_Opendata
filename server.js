@@ -43,8 +43,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 var connector = new builder.ChatConnector({
  
  
-    appId: process.env.MICROSOFT_APP_ID || "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
-    appPassword: process.env.MICROSOFT_APP_PASSWORD || "tZtei6Px5cY90yxTkP9HdQ6"
+    appId: process.env.MICROSOFT_APP_ID ,//|| "39e398aa-5e7a-43c7-9079-fcb4f07a6dbc",
+    appPassword: process.env.MICROSOFT_APP_PASSWORD //|| "tZtei6Px5cY90yxTkP9HdQ6"
  
 });
 var bot = new builder.UniversalBot(connector);
@@ -65,7 +65,9 @@ bot.dialog('/', dialog);
 //開場LUIS
 dialog.matches('你好', [
   function (session, args, next) {
-      builder.Prompts.attachment(session, '請上傳一張照片讓我看看在場的俊男美女');
+    var reply_str = '請上傳一張照片讓我看看在場的俊男美女';
+      session.send(reply_str);   
+      
   },
    function (session, results) {
        if (typeof session.message.attachments[0] !== 'undefined') {
@@ -84,7 +86,7 @@ dialog.matches('你好', [
            upLoadImage(options,session);
            
 
-       }
+       } 
     
        
    }
@@ -111,6 +113,41 @@ dialog.matches('開心', [
      
       
   }
+]);
+dialog.matches('認識', [
+
+    function (session, args, next) {
+       // builder.Prompts.attachment(session, '請上傳一張照片讓我看看今天午餐誰來請客');
+       var msg = new builder.Message(session);
+        msg.attachments([{
+            contentType: "image/jpeg",
+            contentUrl: "https://13threaltimeinsight.blob.core.windows.net/imagescontainer/" + filename,
+        }]);
+        session.endDialog(msg);
+        var reply_str = "";
+        if (person_index == -1) {
+            if (max_age > 1) {
+                max_age = parseInt(max_age);
+            }
+            reply_str = '當然是看起來最年輕的要請客囉~~就是你啦不要躲，看起來你只有' + max_age + '歲呢!!';
+        } else {
+            var title_str;
+            if(FinalName=="微軟總經理Jerry"){
+              title_str="總經理";
+            }else if(FinalName=="微軟副總經理KC"){
+               title_str="副總經理";
+            }
+            reply_str = '嗨'+FinalName+'，好久不見啦~~';
+            person_index = -1;
+        }
+        session.send(reply_str);
+        
+    },
+
+    function (session, results) {
+      
+    }
+
 ]);
 dialog.matches('請客', [
 
