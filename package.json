@@ -8,6 +8,8 @@
     "botbuilder": "^3.3.2",
     "fs": "0.0.1-security",
     "gm": "^1.23.0",
+    "html-entities": "^1.2.0",
+    "htmlparser2": "^3.9.2",
     "needle": "^1.1.2",
     "oxford-face-api": "^0.1.1",
     "parse-json": "^2.2.0",
