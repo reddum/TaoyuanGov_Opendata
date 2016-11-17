@@ -29,6 +29,7 @@ var CROP = true;
 var KC_ID="7c1e96f9-c73c-4eea-951b-61aab07c1b16";
 var JERRY_ID="16ef3542-84b4-448e-9250-9f57773f183b";
 var FinalName=""; 
+var urlencode = require('urlencode');
 //=========================================================
 // Bot Setup
 //=========================================================
@@ -67,31 +68,25 @@ dialog.matches('你好', [
   function (session, args, next) {
     var reply_str = '請上傳一張照片讓我看看在場的俊男美女';
       session.send(reply_str);   
-      
+
+       var Eng="\"postUnit\"";
+       var Unit="\""+urlencode("衛生局")+"\"";
+       var url="http://data.tycg.gov.tw/api/v1/rest/datastore/73644460-c76f-4afa-aa30-064bfef291d8?"+"filters={"+Eng+":"+Unit+"}";
+       console.log(url);
+            httprequest(url, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                  var info = JSON.parse(body)
+                  console.log(info.result.records[0].postUnit);
+                }else{
+                   console.log(response.statusCode);
+                }
+            })
   },
    function (session, results) {
-       if (typeof session.message.attachments[0] !== 'undefined') {
-           var tok;
-           connector.getAccessToken((error, token) => {
-               tok = token;
-           });
-           var options = {
-               url: session.message.attachments[0].contentUrl,
-               headers: {
-                   'Content-Type': 'application/octet-stream',
-                   'Authorization': 'Bearer ' + tok
-               }
-           };
-            
-           upLoadImage(options,session);
-           
-
-       } 
     
-       
    }
 ]);
-//intent LUIS 請客     根目錄/smileFace & actionmoneyFace為判斷笑容值 ＆ Jerry/younger 
+ 
 dialog.matches('開心', [
   function (session, args, next) {
      // builder.Prompts.attachment(session, '請上傳一張照片讓我看看誰最開心');
