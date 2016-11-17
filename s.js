@@ -178,6 +178,11 @@ dialog.matches('查詢', [
                 }
                 });
             }
+
+            if(Job_entity==null&& Inf_entity==null){
+                var reply_str = "很抱歉我不確定您想做什麼？試試用「請問」開頭，\n來查詢想要的行政單位資訊或是職缺唷!"
+                session.send(reply_str);  
+            }
             
              
            
