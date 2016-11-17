@@ -74,7 +74,7 @@ dialog.matches('查詢', [
                                 }
                             },
                             ontext: function(text){
-                                card_text=card_text+"\r"+text;
+                                card_text=card_text+text;
                                 console.log("-->", text);
                             },
                             onclosetag: function(tagname){
@@ -133,7 +133,7 @@ dialog.matches('查詢', [
                                 }
                             },
                             ontext: function(text){
-                                card_text=card_text+"\r"+text;
+                                card_text=card_text+text;
                                 console.log("-->", text);
                             },
                             onclosetag: function(tagname){
@@ -156,6 +156,7 @@ dialog.matches('查詢', [
                                         .images([
                                             builder.CardImage.create(session,info.result.records[0].img[0].imgurl)
                                         ])
+                                        .tap(builder.CardAction.openUrl(session, "http://www.tycg.gov.tw/ch/home.jsp?id=7&parentpath=0,1&mcustomize=multimessage_view.jsp&dataserno="+info.result.records[0].id))
                                 ]);
                             session.endDialog(msg); 
                        }
@@ -167,6 +168,7 @@ dialog.matches('查詢', [
                                         .title(info.result.records[0].subject)
                                         .subtitle(info.result.records[0].postDate)
                                         .text(card_text)
+                                        .tap(builder.CardAction.openUrl(session, "http://www.tycg.gov.tw/ch/home.jsp?id=7&parentpath=0,1&mcustomize=multimessage_view.jsp&dataserno="+info.result.records[0].id))
                                         
                                 ]);
                             session.endDialog(msg); 
