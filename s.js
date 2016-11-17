@@ -58,37 +58,44 @@ dialog.matches('查詢', [
                 httprequest(url, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var info = JSON.parse(body)
-                    console.log(info.result.records[0].postUnit);
-                    var s=entities.decode(info.result.records[0].jobContent);
-                    var card_text="";
-                    var parser = new htmlparser.Parser({
-                        onopentag: function(name, attribs){
-                            if(name === "script" && attribs.type === "text/javascript"){
-                                console.log("JS! Hooray!");
+                     if(info.result.records.length==0){
+                        var reply_str = '不好意思目前沒有'+Room_entity.entity+'的相關'+Job_entity.entity+'，謝謝您';
+                        session.send(reply_str);  
+                    }
+                    else
+                    {
+                        console.log(info.result.records[0].postUnit);
+                        var s=entities.decode(info.result.records[0].jobContent);
+                        var card_text="";
+                        var parser = new htmlparser.Parser({
+                            onopentag: function(name, attribs){
+                                if(name === "script" && attribs.type === "text/javascript"){
+                                    console.log("JS! Hooray!");
+                                }
+                            },
+                            ontext: function(text){
+                                card_text=card_text+"\r"+text;
+                                console.log("-->", text);
+                            },
+                            onclosetag: function(tagname){
+                                if(tagname === "script"){
+                                    console.log("That's it?!");
+                                }
                             }
-                        },
-                        ontext: function(text){
-                            card_text=card_text+"\r"+text;
-                            console.log("-->", text);
-                        },
-                        onclosetag: function(tagname){
-                            if(tagname === "script"){
-                                console.log("That's it?!");
-                            }
-                        }
-                    }, {decodeEntities: true});
-                    parser.write(s);
-                    parser.end();
-                   // s=s.replace(/<br\s*[\/]?>/gi,"\r");
-                    var msg = new builder.Message(session)
-                        .textFormat(builder.TextFormat.xml)
-                        .attachments([
-                            new builder.HeroCard(session)
-                                .title(info.result.records[0].needGovOrg)
-                                .subtitle(info.result.records[0].postDate+" "+info.result.records[0].subject)
-                                .text(card_text)
-                        ]);
-                    session.endDialog(msg); 
+                        }, {decodeEntities: true});
+                        parser.write(s);
+                        parser.end();
+                       // s=s.replace(/<br\s*[\/]?>/gi,"\r");
+                        var msg = new builder.Message(session)
+                            .textFormat(builder.TextFormat.xml)
+                            .attachments([
+                                new builder.HeroCard(session)
+                                    .title(info.result.records[0].needGovOrg)
+                                    .subtitle(info.result.records[0].postDate+" "+info.result.records[0].subject)
+                                    .text(card_text)
+                            ]);
+                        session.endDialog(msg); 
+                    }
                 }else{
                     
                     console.log(response.statusCode);
@@ -111,7 +118,7 @@ dialog.matches('查詢', [
                 if (!error && response.statusCode == 200) {
                     var info = JSON.parse(body)
                     if(info.result.records.length==0){
-                        var reply_str = '不好意思目前沒有'+Room_entity.entity+'的相關資訊，謝謝您';
+                        var reply_str = '不好意思目前沒有'+Room_entity.entity+'的相關'+Inf_entity.entity+'，謝謝您';
                         session.send(reply_str);  
                     }
                     else
