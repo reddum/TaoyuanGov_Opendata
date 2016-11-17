@@ -91,8 +91,8 @@ dialog.matches('查詢', [
                             .attachments([
                                 new builder.HeroCard(session)
                                     .title(info.result.records[0].needGovOrg)
-                                    .subtitle(info.result.records[0].postDate+" "+info.result.records[0].subject)
-                                    .text(card_text)
+                                    .subtitle(info.result.records[0].pdiffer+"-"+info.result.records[0].subject+"-"+info.result.records[0].postDate)
+                                    .text("http://www.tycg.gov.tw/ch/home.jsp?id=11&parentpath=0,1&mcustomize=job_view.jsp&dataserno="+info.result.records[0].id)
                             ]);
                         session.endDialog(msg); 
                     }
@@ -151,7 +151,7 @@ dialog.matches('查詢', [
                                 .attachments([
                                     new builder.HeroCard(session)
                                         .title(info.result.records[0].subject)
-                                        .subtitle(info.result.records[0].postDate)
+                                        .subtitle("http://www.tycg.gov.tw/ch/home.jsp?id=7&parentpath=0,1&mcustomize=multimessage_view.jsp&dataserno="+info.result.records[0].id)
                                         .text(card_text)
                                         .images([
                                             builder.CardImage.create(session,info.result.records[0].img[0].imgurl)
@@ -166,7 +166,7 @@ dialog.matches('查詢', [
                                 .attachments([
                                     new builder.HeroCard(session)
                                         .title(info.result.records[0].subject)
-                                        .subtitle(info.result.records[0].postDate)
+                                        .subtitle("http://www.tycg.gov.tw/ch/home.jsp?id=7&parentpath=0,1&mcustomize=multimessage_view.jsp&dataserno="+info.result.records[0].id)
                                         .text(card_text)
                                         .tap(builder.CardAction.openUrl(session, "http://www.tycg.gov.tw/ch/home.jsp?id=7&parentpath=0,1&mcustomize=multimessage_view.jsp&dataserno="+info.result.records[0].id))
                                         
