@@ -32,7 +32,7 @@ var model = process.env.LUIS_MODEL_URL || "https://api.projectoxford.ai/luis/v1/
 var recognizer = new builder.LuisRecognizer(model);
 var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', dialog);
-
+dialog.onDefault(builder.DialogAction.send("很抱歉我不確定您想做什麼？試試用「請問」開頭，\n來查詢想要的行政單位資訊或是職缺唷!"));
 //開始LUIS
 dialog.matches('查詢', [
     function (session, args, next) {
@@ -192,3 +192,4 @@ dialog.matches('查詢', [
     
          
 ]);
+
