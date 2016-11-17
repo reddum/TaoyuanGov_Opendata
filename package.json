@@ -16,7 +16,8 @@
     "pureimage": "0.0.13",
     "request": "^2.75.0",
     "restify": "^4.1.1",
-    "superagent": "^2.3.0"
+    "superagent": "^2.3.0",
+    "urlencode": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
